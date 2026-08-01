@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import networkx as nx
 
 # -------------------------------------------------
 # Build network
@@ -45,7 +46,7 @@ steps = 400
 
 # Initial energy
 E = np.zeros(N)
-E[0] = 170.0       # all energy initially in center
+E[0] = 100.0       # all energy initially in center
 
 history = [E.copy()]
 
@@ -83,4 +84,96 @@ plt.ylabel("Energy")
 plt.title("Energy diffusion on a 17-node network")
 plt.legend()
 plt.grid(True)
+
+
+# -------------------------------------------------
+
+# Draw topology
+
+# -------------------------------------------------
+
+G = nx.from_numpy_array(A)
+
+# Custom node positions
+
+pos = {}
+
+# Center
+
+pos[0] = (0, 0)
+
+# Inner ring
+
+r1 = 1.0
+
+angles = np.linspace(0, 2*np.pi, 8, endpoint=False)
+
+for i, ang in enumerate(angles):
+
+    pos[1+i] = (r1*np.cos(ang), r1*np.sin(ang))
+
+# Outer ring
+
+r2 = 2.0
+
+for i, ang in enumerate(angles):
+
+    pos[9+i] = (r2*np.cos(ang), r2*np.sin(ang))
+
+colors = (
+
+    ["dodgerblue"] +
+
+    ["limegreen"]*8 +
+
+    ["orange"]*8
+
+)
+
+plt.figure(figsize=(8,8))
+
+nx.draw_networkx_edges(
+
+    G,
+
+    pos,
+
+    width=2,
+
+    edge_color="gray"
+
+)
+
+nx.draw_networkx_nodes(
+
+    G,
+
+    pos,
+
+    node_color=colors,
+
+    node_size=600,
+
+    edgecolors="black"
+
+)
+
+nx.draw_networkx_labels(
+
+    G,
+
+    pos,
+
+    font_size=10,
+
+    font_color="black"
+
+)
+
+plt.title("17-node Network Topology")
+
+plt.axis("equal")
+
+plt.axis("off")
+
 plt.show()
